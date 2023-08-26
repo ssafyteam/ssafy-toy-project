@@ -16,10 +16,10 @@ build/
 .properties
 bin/
 !**/src/main/**/bin/
-C:\dev\ssafy-toy-project\demo\src\main\resources\application-API-KEY.properties
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+application-API-KEY.properties
 .idea
 *.iws
 *.iml
