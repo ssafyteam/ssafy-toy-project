@@ -16,6 +16,7 @@ build/
 .properties
 bin/
 !**/src/main/**/bin/
+!**/src/main/resources/application-API-KEY.properties
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
