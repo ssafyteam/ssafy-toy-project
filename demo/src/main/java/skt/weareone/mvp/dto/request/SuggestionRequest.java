@@ -14,18 +14,20 @@ public class SuggestionRequest {
     private List<String> tag; // 글 태그
 
     @Builder
-    public SuggestionRequest(String previousText, String title, List<String> tag, String nextLine) {
+    public SuggestionRequest(String previousText, String title, List<String> tag) {
         this.previousText = previousText;
         this.title = title;
         this.tag = tag;
     }
 
-    @Override
-    public String toString() {
-        return "SuggestionRequest{" +
-                "previousText='" + previousText + '\'' +
-                ", Title='" + title + '\'' +
-                ", Tag=" + tag +
-                '}';
+
+    public String toPromptString() {
+//        return "블로그 포스팅 글의 제목 :  " +
+//                title + '\'' +
+//                ", 태그 : " + tag +
+//                ", 포스팅 글 : " +
+        return "포스팅 글 : " +
+                previousText +
+                "포스팅 글의 바로 이전 문장을 바탕으로 다음 문장을 1개 추천해주세요";
     }
 }

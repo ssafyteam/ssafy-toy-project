@@ -1,6 +1,7 @@
 package skt.weareone.mvp.service.impl;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -10,8 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import skt.weareone.mvp.config.ChatGptConfig;
 import skt.weareone.mvp.dto.request.ChatGptRequest;
-import skt.weareone.mvp.dto.response.NextLine;
+import skt.weareone.mvp.dto.response.NextLineRes;
 import skt.weareone.mvp.dto.request.SuggestionRequest;
+import skt.weareone.mvp.dto.response.NextLineResponse;
 import skt.weareone.mvp.exception.GptCannotMakeNextLineException;
 
 @Service
@@ -27,32 +29,33 @@ public class NextLineService {
         return new HttpEntity<>(chatGptRequest, headers);
     }
 
-    public NextLine getResponse(HttpEntity<ChatGptRequest> chatGptRequest) {
-        ResponseEntity<NextLine> responseEntity = restTemplate.postForEntity(
+    public NextLineResponse getResponse(HttpEntity<ChatGptRequest> chatGptRequest) {
+
+        ResponseEntity<NextLineResponse> responseEntity = restTemplate.postForEntity(
                 ChatGptConfig.URL,
                 chatGptRequest,
-                NextLine.class);
+                NextLineResponse.class);
         if (isGptCannotResponse(responseEntity)) {
-            System.out.println(responseEntity.getBody().getNextLine());
             throw new GptCannotMakeNextLineException();
         }
         return responseEntity.getBody();
     }
 
-    public NextLine askQuestionToChatGpt(SuggestionRequest suggestionRequest) {
+    public NextLineResponse askQuestionToChatGpt(SuggestionRequest suggestionRequest) {
+
         return this.getResponse(
                 this.createHttpEntity(
                         ChatGptRequest.builder()
                                 .model(ChatGptConfig.MODEL)
-                                .prompt(suggestionRequest.toString() + "한 줄로 다음 문장 추천해줘")
+                                .prompt(suggestionRequest.toPromptString())
                                 .maxTokens(ChatGptConfig.MAX_TOKEN)
                                 .temperature(ChatGptConfig.TEMPERATURE)
                                 .topP(ChatGptConfig.TOP_P)
                                 .build()));
     }
 
-    public boolean isGptCannotResponse(HttpEntity<NextLine> chatGptResponseEntity) {
-        if (chatGptResponseEntity.getBody().getNextLine() == null || chatGptResponseEntity.getBody().getNextLine().isEmpty() ) {
+    public boolean isGptCannotResponse(HttpEntity<NextLineResponse> chatGptResponseEntity) {
+        if (chatGptResponseEntity.getBody() == null) {
             return true;
         }
         return false;
