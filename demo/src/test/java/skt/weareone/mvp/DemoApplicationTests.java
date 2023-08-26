@@ -1,4 +1,4 @@
-package skt.weareone.mvp.demo;
+package skt.weareone.mvp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
