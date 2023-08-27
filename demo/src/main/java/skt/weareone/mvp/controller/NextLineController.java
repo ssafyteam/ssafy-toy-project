@@ -21,7 +21,6 @@ public class NextLineController {
     @PostMapping("/nextline")
     public ResponseEntity<NextLineResponse> makeNextLine(@RequestBody SuggestionRequest suggestionRequest) {
         log.info("Chat GPT에게 다음 추천 문장 요청, 질문 내용 : {}",suggestionRequest.toPromptString());
-        System.out.println("post!!!!");
         return ResponseEntity.ok(nextLineService.askQuestionToChatGpt(suggestionRequest));
     }
 }

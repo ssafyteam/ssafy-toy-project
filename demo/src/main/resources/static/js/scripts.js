@@ -30,7 +30,7 @@ const onInput = ({target}) => {
         if (res.status === 200 || res.status === 201) {
             res.json().then(json => {
                 document.querySelector("#recommended_text").textContent
-                    = json.choices[0].text.slice(1).trim();
+                    = json.choices[0].message.content.replace(/^"|"$/g, '');
                 console.log(json);
             });
         } else {

@@ -10,11 +10,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import skt.weareone.mvp.config.ChatGptConfig;
+import skt.weareone.mvp.dto.request.ChatGptMessage;
 import skt.weareone.mvp.dto.request.ChatGptRequest;
 import skt.weareone.mvp.dto.response.NextLineRes;
 import skt.weareone.mvp.dto.request.SuggestionRequest;
 import skt.weareone.mvp.dto.response.NextLineResponse;
 import skt.weareone.mvp.exception.GptCannotMakeNextLineException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class NextLineService {
@@ -42,15 +46,21 @@ public class NextLineService {
     }
 
     public NextLineResponse askQuestionToChatGpt(SuggestionRequest suggestionRequest) {
-
+        List<ChatGptMessage> messages = new ArrayList<>();
+        messages.add(ChatGptMessage.builder()
+                .role(ChatGptConfig.ROLE)
+                .content(suggestionRequest.toPromptString())
+                .build());
         return this.getResponse(
                 this.createHttpEntity(
                         ChatGptRequest.builder()
                                 .model(ChatGptConfig.MODEL)
-                                .prompt(suggestionRequest.toPromptString())
+//                                .prompt(suggestionRequest.toPromptString())
                                 .maxTokens(ChatGptConfig.MAX_TOKEN)
                                 .temperature(ChatGptConfig.TEMPERATURE)
-                                .topP(ChatGptConfig.TOP_P)
+//                                .topP(ChatGptConfig.TOP_P)
+                                .stream(ChatGptConfig.STREAM)
+                                .messages(messages)
                                 .build()));
     }
 
