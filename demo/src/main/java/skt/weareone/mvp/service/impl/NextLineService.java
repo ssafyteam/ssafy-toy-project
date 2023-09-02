@@ -2,6 +2,7 @@ package skt.weareone.mvp.service.impl;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,14 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class NextLineService {
     @Value("${gpt-apiKey}")
     private String gpt_apiKey;
     private static RestTemplate restTemplate = new RestTemplate();
 
     public HttpEntity<ChatGptRequest> createHttpEntity(ChatGptRequest chatGptRequest) {
-        System.out.println(gpt_apiKey);
         HttpHeaders headers = new HttpHeaders(); // 헤더 설정
+        log.info("키 : " + gpt_apiKey);
         headers.setContentType(MediaType.parseMediaType(ChatGptConfig.MEDIA_TYPE)); // Content-type JSON으로 설정
         headers.add(ChatGptConfig.AUTHORIZATION, ChatGptConfig.BEARER + gpt_apiKey); // Header에 인증 방식 설정
         return new HttpEntity<>(chatGptRequest, headers);
