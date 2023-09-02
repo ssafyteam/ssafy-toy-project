@@ -45,7 +45,7 @@ jobs:
     - run: gradle init
   
     - name: Build with Gradle
-      run: ./gradlew build #-x test 테스트스킵
+      run: ./gradlew clean build #-x test 테스트스킵
       working-directory: ./demo
 
     # - name: Build with Gradle
