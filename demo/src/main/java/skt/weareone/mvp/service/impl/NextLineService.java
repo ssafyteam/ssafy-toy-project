@@ -30,7 +30,6 @@ public class NextLineService {
 
     public HttpEntity<ChatGptRequest> createHttpEntity(ChatGptRequest chatGptRequest) {
         HttpHeaders headers = new HttpHeaders(); // 헤더 설정
-        log.info("키 : " + gpt_apiKey);
         headers.setContentType(MediaType.parseMediaType(ChatGptConfig.MEDIA_TYPE)); // Content-type JSON으로 설정
         headers.add(ChatGptConfig.AUTHORIZATION, ChatGptConfig.BEARER + gpt_apiKey); // Header에 인증 방식 설정
         return new HttpEntity<>(chatGptRequest, headers);
