@@ -24,16 +24,16 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Set application.yml
-      run: touch ./src/main/resources/application-API-KEY.yml
+    - name: Set application.properties
+      run: touch ./src/main/resources/application-API-KEY.properties
       working-directory: ./demo
       
-    - name: bring application.yml
-      run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application-API-KEY.yml
+    - name: bring application.properties
+      run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application-API-KEY.properties
       working-directory: ./demo
       
-    - name: check application.yml
-      run: cat ./src/main/resources/application-API-KEY.yml
+    - name: check application.properties
+      run: cat ./src/main/resources/application-API-KEY.properties
       working-directory: ./demo
 
     - name: Grant execute permission for gradlew
