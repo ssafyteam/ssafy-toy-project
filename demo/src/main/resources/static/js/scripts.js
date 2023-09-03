@@ -16,7 +16,9 @@ const handleDebounce = (func, wait = 0) => {
     };
 };
 
+
 const onInput = ({target}) => {
+
     // alert(`Value: ${target.value}`);
     const body = JSON.stringify({previousText : target.value});
     console.log(body)
@@ -38,7 +40,30 @@ const onInput = ({target}) => {
         }
     }).catch(err => console.error(err));
 };
+
 const post_area = document.querySelector('#post-area');
+const recommendButton = document.getElementById("recommend-button");
+recommendButton.addEventListener("click",(e) => {
+    const body = JSON.stringify({previousText : post_area.value});
+    console.log(body)
+    fetch('blog/nextline', {
+        method: 'POST',
+        body,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }).then((res) => {
+        if (res.status === 200 || res.status === 201) {
+            res.json().then(json => {
+                document.querySelector("#recommended_text").textContent
+                    = json.choices[0].message.content.replace(/^"|"$/g, '');
+                console.log(json);
+            });
+        } else {
+            console.error(res.statusText);
+        }
+    }).catch(err => console.error(err));
+});
 const deboundcedOnInput = handleDebounce(onInput, 500);
 post_area.addEventListener('keyup',
     deboundcedOnInput);
@@ -54,5 +79,6 @@ post_area.addEventListener('keydown', (e) => {
         console.log("after",post_area.textContent);
 
     }
+
 })
 
