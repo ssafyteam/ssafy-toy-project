@@ -1,4 +1,4 @@
-package skt.weareone.mvp.dto.request;
+package com.weareone.quicklog.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
