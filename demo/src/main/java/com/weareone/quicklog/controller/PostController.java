@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "포스팅 Controller", description = "포스팅 작성 API")
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/posts")
 public class PostController {
     private final NextLineService nextLineService;
 
@@ -27,7 +27,6 @@ public class PostController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "추천 성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근"),
-            @ApiResponse(responseCode = "500", description = "서버 오류 발생")
     })
     @PostMapping("/nextline")
     public ResponseEntity<NextLineResponse> makeNextLine(@RequestBody SuggestionRequest suggestionRequest) {
@@ -60,8 +59,7 @@ public class PostController {
     @Operation(summary = "포스팅 글 추가", description = "포스팅 글 추가")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "포스팅 추가 성공"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근"),
-            @ApiResponse(responseCode = "500", description = "서버 오류 발생")
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근")
     })
     @PostMapping // TODO: String -> Dto, Service 추가
     public ResponseEntity<String> createPost(@RequestBody String post) {
@@ -71,8 +69,7 @@ public class PostController {
     @Operation(summary = "글 수정", description = "포스팅 글 수정")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "글 수정 성공"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근"),
-            @ApiResponse(responseCode = "500", description = "서버 오류 발생")
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근")
     })
     @PutMapping("/{id}") // TODO: String -> Dto, Service 추가
     public ResponseEntity<String> updatePost(@RequestBody String post,@PathVariable(name = "id") long id) {
@@ -83,7 +80,6 @@ public class PostController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "글 삭제 성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근"),
-            @ApiResponse(responseCode = "500", description = "서버 오류 발생")
     })
     @DeleteMapping("/{id}") // TODO: Service 추가
     public ResponseEntity<String> deletePost(@PathVariable(name = "id") long id) {
@@ -95,7 +91,6 @@ public class PostController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "맞춤법 검사 완료"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근"),
-            @ApiResponse(responseCode = "500", description = "서버 오류 발생")
     })
     @PostMapping("/spell-check")
     public ResponseEntity<String> spellCheck(@RequestBody String post) {
@@ -106,7 +101,6 @@ public class PostController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "추천 성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근"),
-            @ApiResponse(responseCode = "500", description = "서버 오류 발생")
     })
     @PostMapping("/image")
     public ResponseEntity<String> makeImage(@RequestBody String name) {
