@@ -1,7 +1,6 @@
 package skt.weareone.mvp.service.impl;
 
 import org.springframework.stereotype.Service;
-import skt.weareone.mvp.dto.request.SuggestionRequest;
 import skt.weareone.mvp.dto.response.FeedInfoResponse;
 
 @Service
