@@ -1,10 +1,9 @@
-package skt.weareone.mvp.dto.response;
+package com.weareone.quicklog.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.weareone.quicklog.dto.request.ChatGptMessage;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import skt.weareone.mvp.dto.request.ChatGptMessage;
 
 import java.io.Serializable;
 
