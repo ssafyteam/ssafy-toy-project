@@ -1,4 +1,4 @@
-package skt.weareone.mvp.config;
+package com.weareone.quicklog.config;
 
 import org.springframework.context.annotation.Configuration;
 

@@ -1,4 +1,4 @@
-package skt.weareone.mvp.exception;
+package com.weareone.quicklog.exception;
 
 public class GptCannotMakeNextLineException extends RuntimeException {
     public GptCannotMakeNextLineException() {

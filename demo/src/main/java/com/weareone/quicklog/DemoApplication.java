@@ -1,4 +1,5 @@
-package skt.weareone.mvp;
+package com.weareone.quicklog;
+
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package skt.weareone.mvp;
+package com.weareone.quicklog;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

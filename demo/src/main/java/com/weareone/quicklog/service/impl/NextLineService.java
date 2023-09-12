@@ -1,7 +1,10 @@
-package skt.weareone.mvp.service.impl;
+package com.weareone.quicklog.service.impl;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.weareone.quicklog.dto.request.ChatGptMessage;
+import com.weareone.quicklog.dto.request.ChatGptRequest;
+import com.weareone.quicklog.dto.request.SuggestionRequest;
+import com.weareone.quicklog.dto.response.NextLineResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -10,13 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import skt.weareone.mvp.config.ChatGptConfig;
-import skt.weareone.mvp.dto.request.ChatGptMessage;
-import skt.weareone.mvp.dto.request.ChatGptRequest;
-import skt.weareone.mvp.dto.response.NextLineRes;
-import skt.weareone.mvp.dto.request.SuggestionRequest;
-import skt.weareone.mvp.dto.response.NextLineResponse;
-import skt.weareone.mvp.exception.GptCannotMakeNextLineException;
+import com.weareone.quicklog.config.ChatGptConfig;
+import com.weareone.quicklog.exception.GptCannotMakeNextLineException;
 
 import java.util.ArrayList;
 import java.util.List;
