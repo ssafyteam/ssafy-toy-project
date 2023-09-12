@@ -1,7 +1,6 @@
-package skt.weareone.mvp.controller;
+package com.weareone.quicklog.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,11 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import skt.weareone.mvp.dto.request.LoginRequest;
-import skt.weareone.mvp.dto.request.SignupRequest;
-import skt.weareone.mvp.dto.request.UserInfoRequest;
-import skt.weareone.mvp.dto.response.LoginResponse;
-import skt.weareone.mvp.dto.response.UserInfoResponse;
+import com.weareone.quicklog.dto.request.LoginRequest;
+import com.weareone.quicklog.dto.request.SignupRequest;
+import com.weareone.quicklog.dto.request.UserInfoRequest;
+import com.weareone.quicklog.dto.response.LoginResponse;
+import com.weareone.quicklog.dto.response.UserInfoResponse;
 
 @Slf4j
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package skt.weareone.mvp.controller;
+package com.weareone.quicklog.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import skt.weareone.mvp.dto.response.FeedInfoResponse;
-import skt.weareone.mvp.service.impl.FeedServiceImpl;
+import com.weareone.quicklog.dto.response.FeedInfoResponse;
+import com.weareone.quicklog.service.impl.FeedServiceImpl;
 
 @Slf4j
 @RequiredArgsConstructor

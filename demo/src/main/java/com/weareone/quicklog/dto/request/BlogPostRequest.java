@@ -1,8 +1,8 @@
-package skt.weareone.mvp.dto.request;
+package com.weareone.quicklog.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
-import skt.weareone.mvp.dto.ImageDTO;
+import com.weareone.quicklog.dto.ImageDTO;
 
 import java.time.LocalDate;
 

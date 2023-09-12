@@ -1,5 +1,6 @@
-package skt.weareone.mvp.dto.response;
+package com.weareone.quicklog.dto.request;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,9 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInfoResponse {
-    private Long memberId;
-    private String nickname;
+public class UserInfoRequest {
+    @NotEmpty
     private String name;
     @Pattern(regexp = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$")
     private String phone;

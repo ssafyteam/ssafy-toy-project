@@ -1,4 +1,4 @@
-package skt.weareone.mvp.dto.request;
+package com.weareone.quicklog.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;

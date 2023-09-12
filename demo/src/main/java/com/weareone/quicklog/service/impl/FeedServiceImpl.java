@@ -1,7 +1,7 @@
-package skt.weareone.mvp.service.impl;
+package com.weareone.quicklog.service.impl;
 
 import org.springframework.stereotype.Service;
-import skt.weareone.mvp.dto.response.FeedInfoResponse;
+import com.weareone.quicklog.dto.response.FeedInfoResponse;
 
 @Service
 public class FeedServiceImpl {

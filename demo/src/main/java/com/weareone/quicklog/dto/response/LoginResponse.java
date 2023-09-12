@@ -1,4 +1,4 @@
-package skt.weareone.mvp.dto.response;
+package com.weareone.quicklog.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package skt.weareone.mvp.dto;
+package com.weareone.quicklog.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
