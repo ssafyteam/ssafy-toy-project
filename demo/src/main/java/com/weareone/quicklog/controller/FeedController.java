@@ -25,13 +25,13 @@ public class FeedController {
     }
 
     @Operation(summary = "검색 조회 메서드", description = "검색 조건을 달면 검색을 가능하게 합니다.")
-    @GetMapping
+    @GetMapping("/{feedId}")
     public ResponseEntity<FeedInfoResponse> findAllFeed(String query) {
         return ResponseEntity.ok(feedService.findSearchFeed(query));
     }
 
     @Operation(summary = "내 피드 조회 메서드", description = "내가 등록한 피드들을 볼 수 있습니다.")
-    @GetMapping
+    @GetMapping("/{myFeed}")
     public ResponseEntity<FeedInfoResponse> findMyFeed(@RequestBody Long id) {
         return ResponseEntity.ok(feedService.findMyFeed(id));
     }
