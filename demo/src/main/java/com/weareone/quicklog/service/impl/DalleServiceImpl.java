@@ -6,8 +6,11 @@ import com.weareone.quicklog.dto.image.ImageFormat;
 import com.weareone.quicklog.dto.image.ImageRequest;
 import com.weareone.quicklog.dto.image.ImageResponse;
 import com.weareone.quicklog.dto.image.ImageSize;
+import com.weareone.quicklog.dto.request.SuggestionRequest;
+import com.weareone.quicklog.dto.response.NextLineResponse;
 import com.weareone.quicklog.exception.DalleCannotMakeImageException;
 import com.weareone.quicklog.service.DalleService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -19,11 +22,13 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class DalleServiceImpl implements DalleService {
 
     @Value("${gpt-apiKey}")
     private String gpt_apiKey;
     private static RestTemplate restTemplate = new RestTemplate();
+    private final NextLineService nextLineService;
 
     public HttpEntity<ImageRequest> createHttpEntity(ImageRequest imageRequest) {
         HttpHeaders headers = new HttpHeaders(); // 헤더 설정
@@ -48,7 +53,9 @@ public class DalleServiceImpl implements DalleService {
 
 
     @Override
-    public String imageGenerate(String prompt) {
+    public String imageGenerate(String p) {
+        String prompt = changePrompt(p);
+        log.info("이미지 생성 프롬프트 : {}",prompt);
         ImageRequest imageRequest = new ImageRequest(prompt, null, null, null, null);
         ImageResponse imageResponse = this.getResponse(this.createHttpEntity(imageRequest));
         String url = "";
@@ -83,6 +90,13 @@ public class DalleServiceImpl implements DalleService {
     @Override
     public ImageResponse imageGenerateRequest(ImageRequest imageRequest) {
         return this.getResponse(this.createHttpEntity(imageRequest));
+    }
+
+    @Override
+    public String changePrompt(String prompt) {
+        SuggestionRequest request = SuggestionRequest.builder().previousText(prompt).build();
+        NextLineResponse makeImage = nextLineService.askQuestionToChatGpt(request, "MakeImage");
+        return makeImage.getChoices().get(0).getMessage().getContent();
     }
 
 }

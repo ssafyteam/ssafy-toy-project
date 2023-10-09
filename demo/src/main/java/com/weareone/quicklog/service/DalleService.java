@@ -10,4 +10,5 @@ public interface DalleService {
     String imageGenerate(String prompt);
     List<String> imageGenerate(String prompt, int n, ImageSize size, ImageFormat format);
     ImageResponse imageGenerateRequest(ImageRequest imageRequest);
+    String changePrompt(String prompt);
 }
