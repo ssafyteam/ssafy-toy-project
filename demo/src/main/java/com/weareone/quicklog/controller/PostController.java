@@ -30,8 +30,8 @@ public class PostController {
     })
     @PostMapping("/nextline")
     public ResponseEntity<NextLineResponse> makeNextLine(@RequestBody SuggestionRequest suggestionRequest) {
-        log.info("Chat GPT에게 다음 추천 문장 요청, 질문 내용 : {}",suggestionRequest.toPromptString());
-        return new ResponseEntity<>(nextLineService.askQuestionToChatGpt(suggestionRequest),HttpStatus.CREATED);
+        log.info("Chat GPT에게 다음 추천 문장 요청, 질문 내용 : {}",suggestionRequest.toPromptString("NextLine"));
+        return new ResponseEntity<>(nextLineService.askQuestionToChatGpt(suggestionRequest, "NextLine"),HttpStatus.CREATED);
     }
 
 //    @Operation(summary = "Tag 추가", description = "포스팅 글 작성 시, 글의 Tag를 추가해줍니다.")
