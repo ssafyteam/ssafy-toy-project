@@ -1,12 +1,11 @@
 package com.weareone.quicklog.dto.image;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ImageData {
     private String url;
 
