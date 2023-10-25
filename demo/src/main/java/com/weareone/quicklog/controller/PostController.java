@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,9 +30,9 @@ public class PostController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근"),
     })
     @PostMapping("/nextline")
-    public ResponseEntity<NextLineResponse> makeNextLine(@RequestBody SuggestionRequest suggestionRequest) {
-        log.info("Chat GPT에게 다음 추천 문장 요청, 질문 내용 : {}",suggestionRequest.toPromptString("NextLine"));
-        return new ResponseEntity<>(nextLineService.askQuestionToChatGpt(suggestionRequest, "NextLine"),HttpStatus.CREATED);
+    public ResponseEntity<NextLineResponse> makeNextLine(HttpServletRequest req, @RequestBody SuggestionRequest suggestionRequest) {
+        log.info("Chat GPT에게 다음 추천 문장 요청, 질문 내용 : {}",suggestionRequest.toPromptString());
+        return new ResponseEntity<>(nextLineService.askQuestionToChatGpt(suggestionRequest),HttpStatus.CREATED);
     }
 
 //    @Operation(summary = "Tag 추가", description = "포스팅 글 작성 시, 글의 Tag를 추가해줍니다.")

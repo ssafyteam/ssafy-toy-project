@@ -22,7 +22,7 @@ const onInput = ({target}) => {
     // alert(`Value: ${target.value}`);
     const body = JSON.stringify({previousText : target.value});
     console.log(body)
-    fetch('blog/nextline', {
+    fetch('posts/nextline', {
         method: 'POST',
         body,
         headers: {
@@ -46,7 +46,7 @@ const recommendButton = document.getElementById("recommend-button");
 recommendButton.addEventListener("click",(e) => {
     const body = JSON.stringify({previousText : post_area.value});
     console.log(body)
-    fetch('blog/nextline', {
+    fetch('posts/nextline', {
         method: 'POST',
         body,
         headers: {
