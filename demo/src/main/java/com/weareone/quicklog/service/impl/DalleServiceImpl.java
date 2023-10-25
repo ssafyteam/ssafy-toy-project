@@ -8,7 +8,9 @@ import com.weareone.quicklog.dto.image.ImageResponse;
 import com.weareone.quicklog.dto.image.ImageSize;
 import com.weareone.quicklog.dto.request.SuggestionRequest;
 import com.weareone.quicklog.dto.response.NextLineResponse;
+import com.weareone.quicklog.entity.DalleImage;
 import com.weareone.quicklog.exception.DalleCannotMakeImageException;
+import com.weareone.quicklog.repository.DalleImageRepository;
 import com.weareone.quicklog.service.DalleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,12 +31,18 @@ public class DalleServiceImpl implements DalleService {
     private String gpt_apiKey;
     private static RestTemplate restTemplate = new RestTemplate();
     private final NextLineService nextLineService;
+    private final DalleImageRepository repository;
 
     public HttpEntity<ImageRequest> createHttpEntity(ImageRequest imageRequest) {
         HttpHeaders headers = new HttpHeaders(); // 헤더 설정
         headers.setContentType(MediaType.parseMediaType("application/json; charset=UTF-8")); // Content-type JSON으로 설정
         headers.add(ChatGptConfig.AUTHORIZATION, ChatGptConfig.BEARER + gpt_apiKey); // Header에 인증 방식 설정
         return new HttpEntity<>(imageRequest, headers);
+    }
+
+    public void saveImage(String url) {
+        // TODO : DalleImage 엔티티에 Member 추가
+        repository.save(DalleImage.builder().imgUrl(url).build());
     }
 
     public ImageResponse getResponse(HttpEntity<ImageRequest> imageRequest) {
@@ -64,6 +72,7 @@ public class DalleServiceImpl implements DalleService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        saveImage(url);
         return url;
     }
 
@@ -73,7 +82,6 @@ public class DalleServiceImpl implements DalleService {
         ImageResponse imageResponse = this.getResponse(this.createHttpEntity(imageRequest));
         List<String> list = new ArrayList<>();
         try {
-
             imageResponse.getData().forEach(imageData -> {
                 if (format.equals(ImageFormat.URL)) {
                     list.add(imageData.getUrl());
