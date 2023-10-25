@@ -45,11 +45,11 @@ public class NextLineService {
         return responseEntity.getBody();
     }
 
-    public NextLineResponse askQuestionToChatGpt(SuggestionRequest suggestionRequest) {
+    public NextLineResponse askQuestionToChatGpt(SuggestionRequest suggestionRequest, String askType) {
         List<ChatGptMessage> messages = new ArrayList<>();
         messages.add(ChatGptMessage.builder()
                 .role(ChatGptConfig.ROLE)
-                .content(suggestionRequest.toPromptString())
+                .content(suggestionRequest.toPromptString(askType))
                 .build());
         return this.getResponse(
                 this.createHttpEntity(
