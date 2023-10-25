@@ -5,11 +5,11 @@ import lombok.Getter;
 
 @Entity
 @Getter
-public class Category {
+public class PostTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id")
+    @Column(name = "post_tag_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -17,7 +17,10 @@ public class Category {
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "tag_id")
+    private Tag tag;
 
-    private String categoryName;
+    public void setPost(Post post) {
+        this.post = post;
+    }
+}
