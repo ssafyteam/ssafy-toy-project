@@ -29,11 +29,5 @@ public class ChatGptRequest implements Serializable {
         this.stream = stream;
         this.messages = messages;
     }
-    //    public ChatGptRequest(String model, String prompt, Integer maxTokens, Double temperature, Double topP) {
-//        this.model = model;
-//        this.prompt = prompt;
-//        this.maxTokens = maxTokens;
-//        this.temperature = temperature;
-//        this.topP = topP;
-//    }
+
 }

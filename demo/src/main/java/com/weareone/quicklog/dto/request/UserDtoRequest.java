@@ -6,17 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
 
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignupRequest {
-
-    @NotEmpty
-    @Pattern(regexp = "^(?=.*[a-z0-9])[a-z0-9].{1,16}$",
-            message = "아이디는 영문, 숫자 중 2자 이상 16자 이하여야합니다 (초성, 자음 불가)")
-    String id;
+public class UserDtoRequest {
 
     @NotEmpty
     @Pattern(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$",
@@ -28,6 +26,10 @@ public class SignupRequest {
             message = "비밀번호는 영문+숫자+특수문자를 포함한 8~20자여야 합니다")
     // 영문 + 숫자 + 특수문자 8자 이상 20자 이하
     String password;
+
+    @NotEmpty
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birth;
 
     @NotEmpty
     @Pattern(regexp = "^(?=.*[a-z0-9가-힣])[a-z0-9가-힣].{1,16}$",

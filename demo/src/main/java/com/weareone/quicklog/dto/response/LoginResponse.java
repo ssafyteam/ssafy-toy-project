@@ -1,17 +1,16 @@
 package com.weareone.quicklog.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginResponse {
 
     private String accessToken;
+    private String tokenType = "Bearer";
     private String refreshToken;
 
     private Long memberId;
