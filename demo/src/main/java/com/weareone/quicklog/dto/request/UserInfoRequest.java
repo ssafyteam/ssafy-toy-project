@@ -7,16 +7,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserInfoRequest {
     @NotEmpty
+    private String email;
+    private String password;
     private String name;
-    @Pattern(regexp = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$")
-    private String phone;
-    private String birth;
-    private Integer gender;
-    private String address;
+    private String nickname;
+    private LocalDate birth;
 }
