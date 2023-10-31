@@ -21,3 +21,5 @@ public class Category {
     private User user;
 
     private String categoryName;
+
+}
