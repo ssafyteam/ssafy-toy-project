@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,5 +22,11 @@ public class Image {
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    public Image(String imageName, String imageUrl, String originName) {
+        this.imageName = imageName;
+        this.imageUrl = imageUrl;
+        this.originName = originName;
     }
 }
