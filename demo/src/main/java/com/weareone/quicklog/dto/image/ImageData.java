@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ImageData {
-    private String url;
+    private String imageUrl;
 
     @JsonProperty("b64_json")
     private String b64Json;

@@ -1,19 +1,34 @@
 package com.weareone.quicklog.service.impl;
 
+import com.weareone.quicklog.entity.User;
+import com.weareone.quicklog.repository.FeedRepository;
+import com.weareone.quicklog.service.FeedService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.weareone.quicklog.dto.response.FeedInfoResponse;
 
 @Service
-public class FeedServiceImpl {
-    public FeedInfoResponse findAllFeed() {
+@RequiredArgsConstructor
+public class FeedServiceImpl implements FeedService {
+
+    private final FeedRepository feedRepository;
+
+    @Override
+    public Page<FeedInfoResponse> findAll(Pageable pageable) {
         return null;
     }
 
-    public FeedInfoResponse findMyFeed(Long id) {
+    @Override
+    public Page<FeedInfoResponse> findByUser(Pageable pageable, String email) {
         return null;
     }
 
-    public FeedInfoResponse findSearchFeed(String query) {
+    @Override
+    public Page<FeedInfoResponse> searchByTitle(String keyword) {
         return null;
     }
+
+
 }
