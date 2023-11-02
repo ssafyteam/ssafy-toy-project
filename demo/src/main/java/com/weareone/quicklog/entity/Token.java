@@ -1,10 +1,7 @@
 package com.weareone.quicklog.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
@@ -13,13 +10,16 @@ import lombok.Setter;
 @Entity
 @Table(name = "token")
 public class Token {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long token_id;
-    @Column(nullable = false, unique = true)
-    private String refreshToken;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long token_id;
+//    @Column(nullable = false, unique = true)
+//    private String refreshToken;
+        @Id
+        @Column(nullable = false)
+        private String refreshToken;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id",nullable = false)
-    private User user;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id",nullable = false)
+//    private User user;
 }

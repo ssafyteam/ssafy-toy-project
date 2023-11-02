@@ -2,9 +2,11 @@ package com.weareone.quicklog.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Category {
 
     @Id
@@ -12,8 +14,7 @@ public class Category {
     @Column(name = "category_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @OneToOne(mappedBy = "category", fetch = FetchType.LAZY)
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -22,4 +23,11 @@ public class Category {
 
     private String categoryName;
 
+    public Category(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public void addUser(User user) {
+        this.user = user;
+    }
 }

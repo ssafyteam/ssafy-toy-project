@@ -23,4 +23,9 @@ public class PostTag {
     public void setPost(Post post) {
         this.post = post;
     }
+
+    public void addPostAndTag(Post post, Tag tag) {
+        this.post = post;
+        this.tag = tag;
+    }
 }
