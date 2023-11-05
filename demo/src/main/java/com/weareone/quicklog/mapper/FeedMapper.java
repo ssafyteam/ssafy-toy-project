@@ -14,6 +14,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface FeedMapper {
+    @Mapping(source = "category.categoryName", target = "category")
     FeedInfoResponse postToFeedInfoResponse(Post post);
     UserDtoResponse userToUserDtoResponse(User user);
 
