@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.List;
 
 @Entity
 @Getter
+//@Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post {
 
@@ -22,7 +25,11 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user;
     private String title;
-    private String category;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     private LocalDate createdAt;
     private String contents;
     private boolean isPublic;
@@ -33,19 +40,35 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostTag> postTags = new ArrayList<>();
 
-    public Post(User user, String title, String category, String contents, boolean isPublic) {
-        setUser(user);
+
+//    public static Post createPost(User user, String title, Category category, String contents, boolean isPublic) {
+//        Post post = new Post();
+//        post.setUser(user);
+//        post.setTitle(title);
+//        post.setCreatedAt(LocalDate.now());
+//        post.setCategory(category);
+//        post.setContents(contents);
+//        post.setPublic(isPublic);
+//        return post;
+//    }
+
+    public Post(User user, String title, Category category, String contents, boolean isPublic) {
+        if (user != null) {
+            setUser(user);
+        }
         this.title = title;
-        this.category = category;
-        this.createdAt = LocalDate.now();
+        if (category != null) {
+            setCategory(category);
+        }
         this.contents = contents;
         this.isPublic = isPublic;
     }
 
-    public void changePostInfo(String title, String category, String contents, boolean isPublic) {
+    public void changePostInfo(Category category, String title, String contents, boolean isPublic) {
+        if (category != null) {
+            setCategory(category);
+        }
         this.title = title;
-        this.category = category;
-        this.createdAt = LocalDate.now();
         this.contents = contents;
         this.isPublic = isPublic;
     }
@@ -53,6 +76,10 @@ public class Post {
     public void setUser(User user) {
         this.user = user;
         user.getPosts().add(this);
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public void addImage(Image image) {
