@@ -17,7 +17,9 @@ import java.util.List;
 public interface FeedMapper {
     @Mapping(source = "category.categoryName", target = "category")
     FeedInfoResponse postToFeedInfoResponse(Post post);
-    Page<FeedInfoResponse> pagePostToPageFeedInfoResponse(Page<Post> page);
+    default Page<FeedInfoResponse> pagePostToPageFeedInfoResponse(Page<Post> page) {
+        return page.map(this::postToFeedInfoResponse);
+    }
 
     UserDtoResponse userToUserDtoResponse(User user);
 
