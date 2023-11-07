@@ -17,5 +17,4 @@ public class UserDtoResponse {
     private String nickName;
     private String name;
     private LocalDate birth;
-    private String address;
 }
