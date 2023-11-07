@@ -1,5 +1,6 @@
 package com.weareone.quicklog.dto.response;
 
+import com.weareone.quicklog.dto.image.ImageData;
 import com.weareone.quicklog.dto.image.ImageResponse;
 import com.weareone.quicklog.entity.User;
 import lombok.*;
@@ -20,5 +21,5 @@ public class FeedInfoResponse {
     private String category;
     private LocalDate createdAt;
     private String contents;
-    private List<ImageResponse> images;
+    private List<ImageData> images;
 }
