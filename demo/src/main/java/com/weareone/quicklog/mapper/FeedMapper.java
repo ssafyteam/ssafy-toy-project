@@ -9,6 +9,7 @@ import com.weareone.quicklog.entity.Post;
 import com.weareone.quicklog.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -16,14 +17,12 @@ import java.util.List;
 public interface FeedMapper {
     @Mapping(source = "category.categoryName", target = "category")
     FeedInfoResponse postToFeedInfoResponse(Post post);
-    UserDtoResponse userToUserDtoResponse(User user);
+    Page<FeedInfoResponse> pagePostToPageFeedInfoResponse(Page<Post> page);
 
-    //@Mapping(target = "created", expression = "java(java.util.Date.from(java.time.Instant.now()))")
-    ImageResponse imageToImageResponse(Image image);
+    UserDtoResponse userToUserDtoResponse(User user);
 
     ImageData imageToImageData(Image image);
 
     List<ImageData> imagesToImageDatas(List<Image> images);
 
-    List<ImageResponse> imageDatasToImageResponses(List<ImageData> imageDatas);
 }
