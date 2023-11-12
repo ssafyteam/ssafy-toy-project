@@ -1,6 +1,5 @@
 package com.weareone.quicklog.service.impl;
 
-import com.weareone.quicklog.dto.ImageDTO;
 import com.weareone.quicklog.dto.request.BlogPostRequest;
 import com.weareone.quicklog.entity.*;
 import com.weareone.quicklog.dto.request.UpdatePostRequest;
@@ -8,14 +7,13 @@ import com.weareone.quicklog.exception.PostNotFoundException;
 import com.weareone.quicklog.repository.*;
 import com.weareone.quicklog.repository.file.FilePath;
 import com.weareone.quicklog.service.PostService;
+import com.weareone.quicklog.service.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,20 +26,19 @@ public class PostServiceImpl implements PostService {
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
     private final CategoryRepository categoryRepository;
-
+    private final S3Uploader s3Uploader;
     public Long createPost(BlogPostRequest request, List<MultipartFile> images) throws IOException {
         Category category = new Category(request.getCategory());
         //유저 연관관계 매핑
         category.addUser(null);
         categoryRepository.save(category);
         Post post = new Post(null, request.getTitle(), category, request.getContents(), request.isPublic());
-
-        if (!images.isEmpty()) { //null 처리도 해야되나?
+        if (images!=null && !images.isEmpty()) {
             for (MultipartFile image : images) {
-                String storeFileName = null;
-                storeFileName = createStoreFileName(image.getOriginalFilename());
-                image.transferTo(new File(FilePath.filePath + storeFileName));
-                Image img = new Image();
+                Image img = s3Uploader.upload(image,"static");
+//                String storeFileName = createStoreFileName(image.getOriginalFilename());
+//                image.transferTo(new File(FilePath.filePath + storeFileName));
+//                Image img = new Image();
                 img.setPost(post);
                 imageRepository.save(img);
             }
@@ -53,7 +50,7 @@ public class PostServiceImpl implements PostService {
                 Tag nowTag = new Tag(tag);
                 tagRepository.save(nowTag);
                 PostTag postTag = new PostTag();
-                postTag.addPostAndTag(post,nowTag);
+                postTag.addPostAndTag(post, nowTag);
                 postTagRepository.save(postTag);
             }
         }
@@ -68,6 +65,7 @@ public class PostServiceImpl implements PostService {
         List<Image> findPostImages = findPost.getImages();
         for (Image img : findPostImages) {
             imageRepository.delete(img);
+
         }
         //원래 포스트의 태그들 받아와서 삭제
         List<PostTag> postTags = findPost.getPostTags();
@@ -80,11 +78,12 @@ public class PostServiceImpl implements PostService {
         if (!images.isEmpty()) { //null 처리도 해야되나?
             for (MultipartFile image : images) {
                 String storeFileName = null;
-                storeFileName = createStoreFileName(image.getOriginalFilename());
-                image.transferTo(new File(FilePath.filePath + storeFileName));
-                Image img = new Image();
-                img.setPost(findPost);
-                imageRepository.save(img);
+//                storeFileName = createStoreFileName(image.getOriginalFilename());
+//                image.transferTo(new File(FilePath.filePath + storeFileName));
+//                String fileUrl = ""
+//                Image img = new Image(storeFileName,fileUrl,image.getOriginalFilename());
+//                img.setPost(findPost);
+//                imageRepository.save(img);
             }
         }
         if (request.getTags() != null) {
@@ -99,9 +98,6 @@ public class PostServiceImpl implements PostService {
         }
         return findPost.getId();
     }
-
-
-
 
     @Override
     public void delete(long postId) {

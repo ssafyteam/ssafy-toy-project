@@ -25,11 +25,11 @@ public class SecurityConfig {
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        return  httpSecurity
+        return httpSecurity
                 .authorizeHttpRequests((authorize) ->
 //                        authorize.anyRequest().authenticated()
-                                authorize.requestMatchers(HttpMethod.POST,"/users/login").permitAll()
-                                        .requestMatchers("/error").permitAll()
+                                authorize.requestMatchers(HttpMethod.POST, "/users/login").permitAll()
+                                        .requestMatchers("/*").permitAll()
                                         .anyRequest().authenticated()
 
                 ).csrf(AbstractHttpConfigurer::disable)
