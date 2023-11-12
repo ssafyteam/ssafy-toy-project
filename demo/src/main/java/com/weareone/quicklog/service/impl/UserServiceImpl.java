@@ -1,63 +1,84 @@
 package com.weareone.quicklog.service.impl;
 
 import com.weareone.quicklog.dto.JwtToken;
+import com.weareone.quicklog.dto.Role;
 import com.weareone.quicklog.dto.request.LoginRequest;
 import com.weareone.quicklog.dto.request.UserDtoRequest;
+import com.weareone.quicklog.dto.request.UserInfoRequest;
+import com.weareone.quicklog.dto.request.UserSignUpDto;
 import com.weareone.quicklog.dto.response.UserDtoResponse;
 import com.weareone.quicklog.entity.Token;
 import com.weareone.quicklog.entity.User;
-import com.weareone.quicklog.exception.BlogAPIException;
 import com.weareone.quicklog.exception.ResourceNotFoundException;
 import com.weareone.quicklog.repository.TokenRepository;
 import com.weareone.quicklog.repository.UserRepository;
 import com.weareone.quicklog.security.JwtTokenProvider;
+import com.weareone.quicklog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
-
-    private final ModelMapper mapper;
     private final PasswordEncoder passwordEncoder;
+    private final ModelMapper mapper;
+    @Override
+    public String signup(UserSignUpDto userSignUpDto) throws Exception {
 
-//    public UserServiceImpl(UserRepository userRepository, AuthenticationManagerBuilder authenticationManagerBuilder, JwtTokenProvider jwtTokenProvider, ModelMapper mapper, PasswordEncoder passwordEncoder) {
-//        this.userRepository = userRepository;
-//        this.authenticationManagerBuilder = authenticationManagerBuilder;
-//        this.jwtTokenProvider = jwtTokenProvider;
-//        this.mapper = mapper;
-//        this.passwordEncoder = passwordEncoder;
-//    }
+        if (userRepository.findByEmail(userSignUpDto.getEmail()).isPresent()) {
+            throw new Exception("이미 존재하는 이메일입니다.");
+        }
 
-//    @Override
-//    public String signup(UserDtoRequest userDtoRequest) {
-//        if(userRepository.existsByEmail(userDtoRequest.getEmail())) {
-//            throw new BlogAPIException(HttpStatus.BAD_REQUEST,"이미 가입된 이메일입니다");
-//        }
-//        User user = new User();
-//        user.
-//        System.out.println("tet");
-//        user.setEmail(userDtoRequest.getEmail());
-//        user.setPassword(passwordEncoder.encode(userDtoRequest.getPassword()));
-//        user.setName(userDtoRequest.getName());
-//        user.setNickname(userDtoRequest.getNickname());
-//        user.setBirth(userDtoRequest.getBirth());
-//        userRepository.save(user);
-//        return "회원가입 성공";
-//    }
+        if (userRepository.findByNickname(userSignUpDto.getNickname()).isPresent()) {
+            throw new Exception("이미 존재하는 닉네임입니다.");
+        }
+
+        User user = User.builder()
+                .email(userSignUpDto.getEmail())
+                .password(userSignUpDto.getPassword())
+                .nickname(userSignUpDto.getNickname())
+                .name(userSignUpDto.getName())
+                .birth(userSignUpDto.getBirth())
+                .role(Role.USER)
+                .build();
+
+        userRepository.save(user);
+        return "회원가입 성공";
+    }
+
+    @Override
+    public Void updateUser(String token, UserInfoRequest userInfoRequest) throws Exception {
+
+        String email = jwtTokenProvider.getEmail(token);
+        Optional<User> optUser = Optional.of(userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("해당 이메일이 존재하지 않습니다.")));
+        if (userRepository.findByEmail(userInfoRequest.getEmail()).isPresent()) {
+            throw new Exception("이미 존재하는 이메일입니다.");
+        }
+
+        if (userRepository.findByNickname(userInfoRequest.getNickname()).isPresent()) {
+            throw new Exception("이미 존재하는 닉네임입니다.");
+        }
+        optUser.get().update(userInfoRequest.getEmail(), userInfoRequest.getPassword(), userInfoRequest.getBirth(),userInfoRequest.getName(),userInfoRequest.getNickname());
+        return null;
+    }
+
+    @Override
+    public Long deleteUser(String token) {
+        String email = jwtTokenProvider.getEmail(token);
+        Long cnt = userRepository.deleteByEmail(email);
+        return cnt;
+    }
 
     @Override
     public JwtToken login(LoginRequest loginRequest) {
@@ -67,35 +88,12 @@ public class UserServiceImpl implements UserService{
         if (!loginRequest.getPassword().equals(user.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
-//        // 1. username + password 를 기반으로 Authentication 객체 생성
-//        // 이때 authentication 은 인증 여부를 확인하는 authenticated 값이 false
-//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
-//        System.out.println(authenticationToken);
-//        // 2. 실제 검증. authenticate() 메서드를 통해 요청된 User 에 대한 검증 진행
-//        // authenticate 메서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드 실행
-//        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-//        System.out.println("name "+authentication.getDetails());
-        // 3. 인증 정보를 기반으로 JWT 토큰 생성
-//        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
-        JwtToken jwtToken = jwtTokenProvider.generateToken(user.getEmail(), user.getRoles());
-        System.out.println(jwtToken.getRefreshToken());
+
+        JwtToken jwtToken = jwtTokenProvider.generateToken(user.getEmail());
         tokenRepository.save(new Token(jwtToken.getRefreshToken()));
         return jwtToken;
     }
 
-    @Override
-    public UserDtoResponse updateUserInfo(UserDtoRequest userDtoRequest, long id) {
-//        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("user","id",id));
-//
-//        user.setEmail(userDtoRequest.getEmail());
-//        user.setPassword(passwordEncoder.encode(userDtoRequest.getPassword()));
-//        user.setName(userDtoRequest.getName());
-//        user.setNickname(userDtoRequest.getNickname());
-//        user.setBirth(userDtoRequest.getBirth());
-//
-//        User updatedUser = userRepository.save(user);
-//        UserDtoResponse userDtoResponse = mapper.map(updatedUser, UserDtoResponse.class);
-//        return userDtoResponse;
-        return null;
-    }
+
+
 }

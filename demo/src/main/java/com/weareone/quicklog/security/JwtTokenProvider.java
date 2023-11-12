@@ -9,6 +9,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,15 +24,19 @@ import java.util.List;
 
 @Slf4j
 @Component
-
+@Getter
 public class JwtTokenProvider {
     private final Key key;
     private final TokenRepository tokenRepository;
     private final UserRepository userRepository;
     private final CustomUserDetailsService userDetailsService;
-    // application.yml에서 secret 값 가져와서 key에 저장
+    // application.properties에서 secret 값 가져와서 key에 저장
+    @Value("${jwt.access.header}")
+    private String accessHeader;
 
-    public JwtTokenProvider(@Value("${app.jwt-secret}") String secretKey, TokenRepository tokenRepository, UserRepository userRepository, CustomUserDetailsService userDetailsService) {
+    @Value("${jwt.refresh.header}")
+    private String refreshHeader;
+    public JwtTokenProvider(@Value("${jwt.secretKey}") String secretKey, TokenRepository tokenRepository, UserRepository userRepository, CustomUserDetailsService userDetailsService) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.tokenRepository = tokenRepository;
@@ -40,12 +45,7 @@ public class JwtTokenProvider {
     }
 
     // User 정보를 가지고 AccessToken, RefreshToken을 생성하는 메서드
-    public JwtToken generateToken(String email, List<String> roles) {
-        // 권한 가져오기
-//        String authorities = authentication.getAuthorities().stream()
-//                .map(GrantedAuthority::getAuthority)
-//                .collect(Collectors.joining(","));
-//        System.out.println("generate "+authentication.getName());
+    public JwtToken generateToken(String email) {
         long now = System.currentTimeMillis();
         long thirtyMinutesInMillis = 30 * 60 * 1000; // 30 minutes in milliseconds
         long accessTokenExpiresInMillis = now + thirtyMinutesInMillis;
@@ -53,8 +53,6 @@ public class JwtTokenProvider {
 
         // Access Token 생성
         Claims claims = Jwts.claims().setSubject(email);
-        claims.put("roles",roles);
-
         String accessToken = Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(accessTokenExpiresIn)
@@ -123,42 +121,27 @@ public class JwtTokenProvider {
         return tokenRepository.existsByRefreshToken(refreshToken);
     }
 
-    // Email로 권한 정보 가져오기
-    public List<String> getRoles(String email) {
-        return userRepository.findByEmail(email).get().getRoles();
-    }
-    // 토큰 정보를 검증하는 메서드
-//    public boolean validateToken(String token) {
-//        try {
-//            Jwts.parserBuilder()
-//                    .setSigningKey(key)
-//                    .build()
-//                    .parseClaimsJws(token);
-//            return true;
-//        } catch (SecurityException | MalformedJwtException e) {
-//            log.info("Invalid JWT Token", e);
-//        } catch (ExpiredJwtException e) {
-//            log.info("Expired JWT Token", e);
-//        } catch (UnsupportedJwtException e) {
-//            log.info("Unsupported JWT Token", e);
-//        } catch (IllegalArgumentException e) {
-//            log.info("JWT claims string is empty.", e);
-//        }
-//        return false;
-//    }
-
-
-    // accessToken
-    private Claims parseClaims(String accessToken) {
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(accessToken)
-                    .getBody();
-        } catch (ExpiredJwtException e) {
-            return e.getClaims();
-        }
+    /**
+     * AccessToken 헤더 설정
+     */
+    public void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
+        response.setHeader(accessHeader, accessToken);
     }
 
+    /**
+     * RefreshToken 헤더 설정
+     */
+    public void setRefreshTokenHeader(HttpServletResponse response, String refreshToken) {
+        response.setHeader(refreshHeader, refreshToken);
+    }
+    /**
+     * AccessToken + RefreshToken 헤더에 실어서 보내기
+     */
+    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
+        response.setStatus(HttpServletResponse.SC_OK);
+
+        setAccessTokenHeader(response, accessToken);
+        setRefreshTokenHeader(response, refreshToken);
+        log.info("Access Token, Refresh Token 헤더 설정 완료");
+    }
 }
