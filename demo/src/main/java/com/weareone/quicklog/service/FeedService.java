@@ -11,6 +11,5 @@ public interface FeedService {
     Page<FeedInfoResponse> findAll(Pageable pageable);
     Page<FeedInfoResponse> findByUser(Pageable pageable, String email);
 
-    Page<FeedInfoResponse> searchByTitle(String keyword);
-
+    Page<FeedInfoResponse> searchByTitle(Pageable pageable, String keyword);
 }
