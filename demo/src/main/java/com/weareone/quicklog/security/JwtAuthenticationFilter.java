@@ -1,6 +1,7 @@
 package com.weareone.quicklog.security;
 
 import com.weareone.quicklog.dto.JwtToken;
+import com.weareone.quicklog.entity.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -8,8 +9,10 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -45,9 +48,10 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                     /// 리프레시 토큰으로 이메일 정보 가져오기
                     String email = jwtTokenProvider.getEmail(refreshToken);
                     /// 이메일로 권한정보 받아오기
-                    List<String> roles = jwtTokenProvider.getRoles(email);
+//                    List<String> roles = jwtTokenProvider.getRoles(email);
                     /// 토큰 발급
-                    JwtToken jwtToken = jwtTokenProvider.generateToken(email,roles);
+//                    JwtToken jwtToken = jwtTokenProvider.generateToken(email,roles);
+                    JwtToken jwtToken = jwtTokenProvider.generateToken(email);
                     /// 헤더에 어세스 토큰 추가
                     jwtTokenProvider.setHeaderAccessToken((HttpServletResponse) response, jwtToken.getAccessToken());
                     /// 컨텍스트에 넣기
@@ -66,26 +70,4 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-
-
-        //        // 1. Request Header에서 JWT 토큰 추출
-//        String token = resolveToken((HttpServletRequest) request);
-//        System.out.println("token "+token);
-//        // 2. validateToken으로 토큰 유효성 검사
-//        if (token != null && jwtTokenProvider.validateToken(token)) {
-//            // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext에 저장
-//            Authentication authentication = jwtTokenProvider.getAuthentication(token);
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
-//        }
-//        chain.doFilter(request, response);
-//    }
-//
-//    // Request Header에서 토큰 정보 추출
-//    private String resolveToken(HttpServletRequest request) {
-//        String bearerToken = request.getHeader("Authorization");
-//        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
-//            return bearerToken.substring(7);
-//        }
-//        return null;
-//    }
 }
