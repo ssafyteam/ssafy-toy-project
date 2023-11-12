@@ -25,4 +25,8 @@ public class Like {
 
     // TODO: 2023-10-09
     // Post와 매핑 추가
+
+    public void addUser(User user) {
+        this.user = user;
+    }
 }

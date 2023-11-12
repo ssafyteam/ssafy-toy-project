@@ -74,10 +74,13 @@ public class PostController {
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 
-    public ResponseEntity<Long> createPost(@RequestBody BlogPostRequest request,
-                                           @RequestPart(value = "image", required = false) List<MultipartFile> image) throws IOException {
-        return new ResponseEntity<>(postService.createPost(request,image),HttpStatus.CREATED);
+    public ResponseEntity<Long> createPost(@RequestPart(value = "request") BlogPostRequest request,
+                                           @RequestPart(value = "images", required = false) List<MultipartFile> image) throws IOException {
+        return new ResponseEntity<>(postService.createPost(request, image), HttpStatus.CREATED);
     }
+
+
+
 
     @Operation(summary = "글 수정", description = "포스팅 글 수정")
     @ApiResponses({
@@ -86,7 +89,7 @@ public class PostController {
     })
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Long> updatePost(@RequestBody UpdatePostRequest request, @PathVariable(name = "id") long id,
-                                           @RequestPart(value = "image", required = false) List<MultipartFile> image) throws IOException {
+                                           @RequestPart(value = "images", required = false) List<MultipartFile> image) throws IOException {
         return new ResponseEntity<>(postService.update(id,request, image),HttpStatus.OK);
     }
 

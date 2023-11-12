@@ -18,6 +18,7 @@ public class Image {
     @JoinColumn(name = "post_id")
     private Post post;
     private String imageName;
+    @Column(length = 1000)
     private String imageUrl;
     private String originName;
 
@@ -30,4 +31,5 @@ public class Image {
         this.imageUrl = imageUrl;
         this.originName = originName;
     }
+
 }
