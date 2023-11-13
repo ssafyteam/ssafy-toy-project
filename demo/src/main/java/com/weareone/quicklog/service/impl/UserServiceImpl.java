@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Void updateUser(String token, UserInfoRequest userInfoRequest) throws Exception {
+    public void updateUser(String token, UserInfoRequest userInfoRequest) throws Exception {
 
         String email = jwtTokenProvider.getEmail(token);
         Optional<User> optUser = Optional.of(userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("해당 이메일이 존재하지 않습니다.")));
@@ -70,7 +70,6 @@ public class UserServiceImpl implements UserService {
             throw new Exception("이미 존재하는 닉네임입니다.");
         }
         optUser.get().update(userInfoRequest.getEmail(), userInfoRequest.getPassword(), userInfoRequest.getBirth(),userInfoRequest.getName(),userInfoRequest.getNickname());
-        return null;
     }
 
     @Override
@@ -94,6 +93,22 @@ public class UserServiceImpl implements UserService {
         return jwtToken;
     }
 
+    @Override
+    public UserDtoResponse getUser(String token) {
+        String email = jwtTokenProvider.getEmail(token);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
+        UserDtoResponse userDtoResponse = UserDtoResponse.builder().email(user.getEmail())
+                        .name(user.getName()).nickName(user.getNickname())
+                        .birth(user.getBirth()).build();
+        return userDtoResponse;
+    }
+
+    @Override
+    public Long deleteRefreshToken(String token) {
+        Long cnt = tokenRepository.deleteByRefreshToken(token);
+        return cnt;
+    }
 
 
 }

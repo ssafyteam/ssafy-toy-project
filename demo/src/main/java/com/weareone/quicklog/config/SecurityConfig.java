@@ -34,14 +34,10 @@ public class SecurityConfig {
 
         return httpSecurity
                 .authorizeHttpRequests((authorize) ->
-//                        authorize.anyRequest().authenticated()
                                 authorize.requestMatchers(HttpMethod.POST,"/users/login").permitAll()
-                                        .requestMatchers("/users/loginInfo").permitAll()
                                         .requestMatchers("/users/signup").permitAll()
-                                        .requestMatchers("/").permitAll()
                                         .requestMatchers("/error").permitAll()
                                         .anyRequest().authenticated()
-
                 ).csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

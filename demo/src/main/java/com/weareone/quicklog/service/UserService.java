@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 public interface UserService {
     String signup(UserSignUpDto userSignUpDto) throws Exception;
     @Transactional
-    Void updateUser(String token, UserInfoRequest userInfoRequest) throws Exception;
+    void updateUser(String token, UserInfoRequest userInfoRequest) throws Exception;
     Long deleteUser(String token);
     JwtToken login(LoginRequest loginRequest);
+    UserDtoResponse getUser(String token);
+    Long deleteRefreshToken(String token);
 }
