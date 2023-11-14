@@ -34,7 +34,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         if (accessToken != null) {
             // 어세스 토큰이 유효한 상황
             if (jwtTokenProvider.validateToken(accessToken)) {
-                System.out.println(accessToken);
                 this.setAuthentication(accessToken);
             }
             // 어세스 토큰이 만료된 상황 | 리프레시 토큰 또한 존재하는 상황
@@ -47,10 +46,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 if (validateRefreshToken && isRefreshToken) {
                     /// 리프레시 토큰으로 이메일 정보 가져오기
                     String email = jwtTokenProvider.getEmail(refreshToken);
-                    /// 이메일로 권한정보 받아오기
-//                    List<String> roles = jwtTokenProvider.getRoles(email);
-                    /// 토큰 발급
-//                    JwtToken jwtToken = jwtTokenProvider.generateToken(email,roles);
                     JwtToken jwtToken = jwtTokenProvider.generateToken(email);
                     /// 헤더에 어세스 토큰 추가
                     jwtTokenProvider.setHeaderAccessToken((HttpServletResponse) response, jwtToken.getAccessToken());

@@ -79,7 +79,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "bad request operation")
     })
     public ResponseEntity<UserDtoResponse> getUserInfo(@RequestHeader("Authorization") String token){
-        UserDtoResponse userDtoResponse = userService.getUser(token.substring(7));
+        UserDtoResponse userDtoResponse = userService.getUser(token);
         return new ResponseEntity<>(userDtoResponse,HttpStatus.OK);
     }
     /**
@@ -94,7 +94,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "bad request operation")
     })
     public ResponseEntity<String> logout(@RequestHeader("Refresh-Token") String token) {
-        Long response = userService.deleteRefreshToken(token.substring(7));
+        Long response = userService.deleteRefreshToken(token);
         if (response > 0) {
             return new ResponseEntity<>("로그아웃 성공",HttpStatus.OK);
         } else {
@@ -116,8 +116,8 @@ public class UserController {
     })
     public ResponseEntity<String> byeUser(@RequestHeader("Authorization") String token, @RequestHeader("Refresh-Token") String refreshToken) {
         //회원정보와 연관된 모든 정보 삭제
-        Long response = userService.deleteUser(token.substring(7));
-        Long tokenResponse = userService.deleteRefreshToken(refreshToken.substring(7));
+        Long response = userService.deleteUser(token);
+        Long tokenResponse = userService.deleteRefreshToken(refreshToken);
         if (response > 0 && tokenResponse > 0) {
             return new ResponseEntity("회원탈퇴 성공",HttpStatus.OK);
         } else {
@@ -140,7 +140,7 @@ public class UserController {
     })
     public ResponseEntity<Void> getMemberInfo(@RequestHeader("Authorization") String token,
                                                          @RequestBody UserInfoRequest userInfoRequest) throws Exception {
-        userService.updateUser(token.substring(7),userInfoRequest);
+        userService.updateUser(token,userInfoRequest);
 
         return new ResponseEntity(HttpStatus.CREATED);
     }
