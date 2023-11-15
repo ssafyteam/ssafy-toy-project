@@ -14,7 +14,7 @@ public class Category {
     @Column(name = "category_id")
     private Long id;
 
-    @OneToOne(mappedBy = "category", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "category", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)

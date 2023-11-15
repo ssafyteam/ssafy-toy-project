@@ -1,5 +1,6 @@
 package com.weareone.quicklog.repository;
 
+import com.weareone.quicklog.entity.Like;
 import com.weareone.quicklog.entity.Post;
 import com.weareone.quicklog.entity.User;
 import org.springframework.data.domain.Page;
@@ -12,4 +13,5 @@ public interface FeedRepository extends JpaRepository<Post, Long> {
     Page<Post> findByUser(User user, Pageable pageable);
 
     Page<Post> findByTitleContaining(String keyword, Pageable pageable);
+
 }

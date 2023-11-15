@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class Post {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
-
+    @CreatedDate
     private LocalDate createdAt;
     private String contents;
     private boolean isPublic;
@@ -39,18 +40,6 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostTag> postTags = new ArrayList<>();
-
-
-//    public static Post createPost(User user, String title, Category category, String contents, boolean isPublic) {
-//        Post post = new Post();
-//        post.setUser(user);
-//        post.setTitle(title);
-//        post.setCreatedAt(LocalDate.now());
-//        post.setCategory(category);
-//        post.setContents(contents);
-//        post.setPublic(isPublic);
-//        return post;
-//    }
 
     public Post(User user, String title, Category category, String contents, boolean isPublic) {
         if (user != null) {
@@ -87,8 +76,4 @@ public class Post {
         image.setPost(this);
     }
 
-    public void addTag(PostTag postTag) {
-        postTags.add(postTag);
-        postTag.setPost(this);
-    }
 }
