@@ -29,8 +29,16 @@ public class FeedServiceImpl implements FeedService {
     private final FeedMapper mapper;
 
     @Override
+    public Page<FeedInfoResponse> getFeedList(Pageable pageable, String keyword) {
+        if (keyword.isEmpty()) return findAll(pageable);
+        else return searchByTitle(pageable, keyword);
+    }
+
+    @Override
     public Page<FeedInfoResponse> findAll(Pageable pageable) {
         Page<Post> posts = feedRepository.findAll(pageable);
+        System.out.println(posts.getTotalElements()+" "+posts.getTotalPages());
+        System.out.println("posts.get() >> "+ posts.get());
         return mapper.pagePostToPageFeedInfoResponse(posts);
     }
 
