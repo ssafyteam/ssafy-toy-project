@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.extern.slf4j.Slf4j;
@@ -66,34 +67,40 @@ public class UserController {
     public ResponseEntity<JwtToken> login(@Valid @RequestBody LoginRequest loginRequest) {
         JwtToken jwtToken = userService.login(loginRequest);
         log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
-        System.out.println(jwtToken.getAccessToken());
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken.getAccessToken())
                 .header("Refresh-Token", "Bearer " + jwtToken.getRefreshToken())
                 .build();
     }
-    @GetMapping("/loginInfo")
-    public String oauthLoginInfo(Authentication authentication){
-        //oAuth2User.toString() 예시 : Name: [2346930276], Granted Authorities: [[USER]], User Attributes: [{id=2346930276, provider=kakao, name=김준우, email=bababoll@naver.com}]
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        //attributes.toString() 예시 : {id=2346930276, provider=kakao, name=김준우, email=bababoll@naver.com}
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-        return attributes.toString();
+    @GetMapping("/profile")
+    @Operation(summary = "내 정보 메서드", description = "내 정보 보기 요청을 받는 메서드 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful"),
+            @ApiResponse(responseCode = "400", description = "bad request operation")
+    })
+    public ResponseEntity<UserDtoResponse> getUserInfo(@RequestHeader("Authorization") String token){
+        UserDtoResponse userDtoResponse = userService.getUser(token);
+        return new ResponseEntity<>(userDtoResponse,HttpStatus.OK);
     }
     /**
      * 로그아웃
      * @param token
      * @return
      */
-    @DeleteMapping("/logout")
+    @PostMapping("/logout")
     @Operation(summary = "로그아웃 메서드", description = "로그아웃 요청을 받는 메서드 입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "successful"),
             @ApiResponse(responseCode = "400", description = "bad request operation")
     })
-    public ResponseEntity logout(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<String> logout(@RequestHeader("Refresh-Token") String token) {
+        Long response = userService.deleteRefreshToken(token);
+        if (response > 0) {
+            return new ResponseEntity<>("로그아웃 성공",HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("로그아웃 실패",HttpStatus.NO_CONTENT);
+        }
 
-        return new ResponseEntity(HttpStatus.OK);
     }
 
     /**
@@ -107,13 +114,14 @@ public class UserController {
             @ApiResponse(responseCode = "204", description = "No Content"),
             @ApiResponse(responseCode = "400", description = "bad request operation")
     })
-    public ResponseEntity<String> byeUser(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<String> byeUser(@RequestHeader("Authorization") String token, @RequestHeader("Refresh-Token") String refreshToken) {
         //회원정보와 연관된 모든 정보 삭제
-        Long response = userService.deleteUser(token.substring(7));
-        if (response > 0) {
-            return new ResponseEntity(HttpStatus.OK);
+        Long response = userService.deleteUser(token);
+        Long tokenResponse = userService.deleteRefreshToken(refreshToken);
+        if (response > 0 && tokenResponse > 0) {
+            return new ResponseEntity("회원탈퇴 성공",HttpStatus.OK);
         } else {
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+            return new ResponseEntity("회원탈퇴 실패",HttpStatus.NO_CONTENT);
         }
 
     }
@@ -132,7 +140,7 @@ public class UserController {
     })
     public ResponseEntity<Void> getMemberInfo(@RequestHeader("Authorization") String token,
                                                          @RequestBody UserInfoRequest userInfoRequest) throws Exception {
-        userService.updateUser(token.substring(7),userInfoRequest);
+        userService.updateUser(token,userInfoRequest);
 
         return new ResponseEntity(HttpStatus.CREATED);
     }

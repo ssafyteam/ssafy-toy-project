@@ -79,6 +79,9 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
     public String getEmail(String token) {
+        if (token.substring(0,6).equals("Bearer")) {
+            token = token.substring(7);
+        }
         return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
     }
 
