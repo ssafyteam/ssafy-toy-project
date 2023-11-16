@@ -30,7 +30,7 @@ public class PostInfo {
         this.contents = contents;
         this.isPublic = isPublic;
         this.images = images.stream()
-                .map(image -> new String(image.getImageName()))
+                .map(image -> new String(image.getImageUrl()))
                 .collect(Collectors.toList());
         this.tags = postTags.stream()
                 .map(postTag -> new String(postTag.getTag().getTagName()))
