@@ -73,14 +73,13 @@ public class PostServiceImpl implements PostService {
         //원래 포스트의 이미지 받아와서 삭제
         List<Image> findPostImages = findPost.getImages();
         for (Image img : findPostImages) {
-            imageRepository.delete(img);
             s3Uploader.deleteFile(img.getImageName());
         }
+        findPost.getImages().removeAll(findPostImages);
+
         //원래 포스트의 태그들 받아와서 삭제
         List<PostTag> postTags = findPost.getPostTags();
-        for (PostTag postTag : postTags) {
-            postTagRepository.delete(postTag); // 이걸로 되는지 확인
-        }
+        findPost.getPostTags().removeAll(postTags);
 
         Category category = new Category(request.getCategory());
 
@@ -116,7 +115,6 @@ public class PostServiceImpl implements PostService {
         List<Image> findPostImages = findPost.getImages();
         for (int i = 0; i < findPostImages.size(); i++) {
             String s = findPostImages.get(i).getImageName();
-            System.out.println(s);
             s3Uploader.deleteFile(s);
         }
         postRepository.delete(findPost);

@@ -2,19 +2,15 @@ package com.weareone.quicklog.controller;
 
 import com.weareone.quicklog.dto.PostInfo;
 import com.weareone.quicklog.dto.request.BlogPostRequest;
-import com.weareone.quicklog.dto.request.SuggestionRequest;
 import com.weareone.quicklog.dto.request.UpdatePostRequest;
-import com.weareone.quicklog.dto.response.NextLineResponse;
 import com.weareone.quicklog.security.JwtTokenProvider;
 import com.weareone.quicklog.service.PostService;
 import com.weareone.quicklog.service.impl.NextLineService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -76,8 +71,7 @@ public class PostController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근")
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-
-    public ResponseEntity<Long> createPost(@RequestPart(value = "request") BlogPostRequest request,
+    public ResponseEntity<Long> createPost(@Valid @RequestPart(value = "request") BlogPostRequest request,
                                            @RequestPart(value = "images", required = false) List<MultipartFile> image,
                                            @RequestHeader("Authorization") String token) throws IOException {
         String email = tokenProvider.getEmail(token);
@@ -105,7 +99,7 @@ public class PostController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근")
     })
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Long> updatePost(@RequestPart UpdatePostRequest request, @PathVariable(name = "id") long id,
+    public ResponseEntity<Long> updatePost(@Valid @RequestPart UpdatePostRequest request, @PathVariable(name = "id") long id,
                                            @RequestPart(value = "images", required = false) List<MultipartFile> image,
                                            @RequestHeader("Authorization") String token) throws IOException {
         String email = tokenProvider.getEmail(token);

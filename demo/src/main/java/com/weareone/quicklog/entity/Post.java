@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,22 +23,20 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user;
     private String title;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
-    @CreatedDate
     private LocalDate createdAt;
     private String contents;
     private boolean isPublic;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostTag> postTags = new ArrayList<>();
 
-    public Post(User user, String title, Category category, String contents, boolean isPublic) {
+    public Post(User user, String title, Category category,String contents, boolean isPublic) {
         if (user != null) {
             setUser(user);
         }
@@ -49,6 +44,7 @@ public class Post {
         if (category != null) {
             setCategory(category);
         }
+        this.createdAt = LocalDate.now();
         this.contents = contents;
         this.isPublic = isPublic;
     }
