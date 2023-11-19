@@ -25,15 +25,15 @@ jobs:
         distribution: 'temurin'
 
     - name: Set application.properties
-      run: touch ./src/main/resources/application-API-KEY.properties
+      run: touch ./src/main/resources/application-secret.properties
       working-directory: ./demo
       
     - name: bring application.properties
-      run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application-API-KEY.properties
+      run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application-secret.properties
       working-directory: ./demo
       
     - name: check application.properties
-      run: cat ./src/main/resources/application-API-KEY.properties
+      run: cat ./src/main/resources/application-secret.properties
       working-directory: ./demo
 
     - name: Grant execute permission for gradlew
