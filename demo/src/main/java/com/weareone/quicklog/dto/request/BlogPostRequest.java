@@ -1,5 +1,6 @@
 package com.weareone.quicklog.dto.request;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,8 +11,10 @@ import lombok.Getter;
 @Getter
 public class BlogPostRequest {
     private String category;
+    @NotEmpty(message = "제목은 공백일 수 없습니다.")
     private String title;
     private String[] tags;
+    @NotEmpty(message = "내용은 공백일 수 없습니다.")
     private String contents;
     private boolean isPublic;
 

@@ -1,18 +1,16 @@
 package com.weareone.quicklog.controller;
 
+import com.weareone.quicklog.dto.PostInfo;
 import com.weareone.quicklog.dto.request.BlogPostRequest;
-import com.weareone.quicklog.dto.request.SuggestionRequest;
 import com.weareone.quicklog.dto.request.UpdatePostRequest;
-import com.weareone.quicklog.dto.response.NextLineResponse;
+import com.weareone.quicklog.security.JwtTokenProvider;
 import com.weareone.quicklog.service.PostService;
 import com.weareone.quicklog.service.impl.NextLineService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,6 +30,7 @@ import java.util.Optional;
 public class PostController {
     private final NextLineService nextLineService;
     private final PostService postService;
+    private final JwtTokenProvider tokenProvider;
 
 //    @Operation(summary = "다음 문장 추천", description = "포스팅 글 작성 시, AI가 다음 문장을 추천해줍니다.")
 //    @ApiResponses({
@@ -73,13 +71,26 @@ public class PostController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근")
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-
-    public ResponseEntity<Long> createPost(@RequestPart(value = "request") BlogPostRequest request,
-                                           @RequestPart(value = "images", required = false) List<MultipartFile> image) throws IOException {
-        return new ResponseEntity<>(postService.createPost(request, image), HttpStatus.CREATED);
+    public ResponseEntity<Long> createPost(@Valid @RequestPart(value = "request") BlogPostRequest request,
+                                           @RequestPart(value = "images", required = false) List<MultipartFile> image,
+                                           @RequestHeader("Authorization") String token) throws IOException {
+        String email = tokenProvider.getEmail(token);
+        return new ResponseEntity<>(postService.createPost(request, image, email), HttpStatus.CREATED);
     }
 
 
+    @Operation(summary = "포스팅 글 조회", description = "포스팅 글 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "포스팅 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근")
+    })
+    @GetMapping("/{id}")
+
+    public ResponseEntity<PostInfo> readPost(@PathVariable(name = "id") long id,
+                                             @RequestHeader("Authorization") String token) throws IOException {
+        String email = tokenProvider.getEmail(token);
+        return new ResponseEntity<>(postService.readPost(id,email), HttpStatus.OK);
+    }
 
 
     @Operation(summary = "글 수정", description = "포스팅 글 수정")
@@ -88,9 +99,11 @@ public class PostController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근")
     })
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Long> updatePost(@RequestBody UpdatePostRequest request, @PathVariable(name = "id") long id,
-                                           @RequestPart(value = "images", required = false) List<MultipartFile> image) throws IOException {
-        return new ResponseEntity<>(postService.update(id,request, image),HttpStatus.OK);
+    public ResponseEntity<Long> updatePost(@Valid @RequestPart UpdatePostRequest request, @PathVariable(name = "id") long id,
+                                           @RequestPart(value = "images", required = false) List<MultipartFile> image,
+                                           @RequestHeader("Authorization") String token) throws IOException {
+        String email = tokenProvider.getEmail(token);
+        return new ResponseEntity<>(postService.update(id, request, image, email), HttpStatus.OK);
     }
 
     @Operation(summary = "글 삭제", description = "포스팅 글 삭제")
@@ -99,8 +112,10 @@ public class PostController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근"),
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable(name = "id") long id) {
-        postService.delete(id);
+    public ResponseEntity<Void> deletePost(@PathVariable(name = "id") long id,
+                                           @RequestHeader("Authorization") String token) {
+        String email = tokenProvider.getEmail(token);
+        postService.delete(id,email);
         return ResponseEntity.noContent().build();
     }
 
