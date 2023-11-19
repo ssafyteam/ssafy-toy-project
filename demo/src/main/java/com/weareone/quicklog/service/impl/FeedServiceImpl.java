@@ -48,5 +48,4 @@ public class FeedServiceImpl implements FeedService {
         return mapper.pagePostToPageFeedInfoResponse(posts);
     }
 
-
 }
