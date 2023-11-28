@@ -2,11 +2,13 @@ package com.weareone.quicklog.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 // Gpt 서버로 어떤 내용을 보낼지에 관한 RequestDto
 @Getter
+@NoArgsConstructor
 public class SuggestionRequest {
 
     private String previousText; // 현재까지 쓴 포스팅 글
